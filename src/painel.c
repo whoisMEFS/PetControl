@@ -1,10 +1,10 @@
 // painel.c
-// Versão completa: PetControl UI
-// - Logo redimensionado automaticamente e centralizado
-// - Export CSV com BOM UTF-8
-// - Rolagem com mouse (scroll) + barra de scroll visual
-// - Layout moderno (cards, botões estilizados)
-// - Pronto para compilar com Raylib 5.0 + sqlite3.c
+// Versão com ENVIO AUTOMÁTICO DE E-MAIL INTEGRADO
+// - Envia avisos de plano vencido ou a vencer
+// - Usa PowerShell: config/send_email.ps1
+// - Evita duplicados via email_enviados.log
+// - UI moderna (Raylib 5.0)
+// - Scroll + tabela + cartões + exportação CSV
 //
 // Compile (exemplo):
 // gcc painel.c sqlite3.c -I"path\to\raylib\include" -L"path\to\raylib\lib" -lraylib -lopengl32 -lgdi32 -lwinmm -static -o PetControl.exe
@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <math.h> 
+#include <math.h>
 
 #include "raylib.h"
 #include "sqlite3.h"
@@ -42,7 +42,7 @@ typedef struct {
     char telefone[64];
     char cpf_cnpj[64];
     char plano[128];
-    char vencimento[16];
+    char vencimento[16]; // YYYY-MM-DD
 } Cliente;
 
 static Cliente clientes[MAX_REG];
@@ -51,6 +51,22 @@ static int totalClientes = 0;
 // Scroll state
 static float scrollY = 0.0f;        // pixels scrolled from top of table
 static float scrollSpeed = 30.0f;   // pixels per wheel tick
+
+// ------------------------------------------------------------
+// Helpers: clamp, safe string copy
+// ------------------------------------------------------------
+static float clampf(float v, float a, float b) {
+    if (v < a) return a;
+    if (v > b) return b;
+    return v;
+}
+
+static void safe_strcpy(char *dst, const char *src, size_t dstsz) {
+    if (!dst || dstsz == 0) return;
+    if (!src) { dst[0] = '\0'; return; }
+    strncpy(dst, src, dstsz - 1);
+    dst[dstsz - 1] = '\0';
+}
 
 // ------------------------------------------------------------
 // Calcular dias restantes
@@ -67,53 +83,127 @@ int diasRestantes(const char *dataVenc) {
     tmv.tm_hour = 12;
 
     time_t t_venc = mktime(&tmv);
+    if (t_venc == (time_t)-1) return 99999;
     time_t now = time(NULL);
 
-    return (int)((t_venc - now) / 86400.0);
+    double diff = difftime(t_venc, now);
+    int dias = (int)(diff / 86400.0);
+    return dias;
 }
 
 // ------------------------------------------------------------
-// Carregar DB
+// CSV escape (duplica aspas)
 // ------------------------------------------------------------
-int carregarClientesDB(const char *dbfile) {
-    sqlite3 *db;
-    sqlite3_stmt *stmt;
-
-    const char *sql =
-        "SELECT id, nome, email, telefone, cpf_cnpj, plano, vencimento "
-        "FROM clientes ORDER BY id;";
-
-    if (sqlite3_open(dbfile, &db) != SQLITE_OK)
-        return 0;
-
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
-        sqlite3_close(db);
-        return 0;
+static void csv_escape_and_write(FILE *f, const char *s) {
+    if (!f) return;
+    if (!s) { fputs("\"\"", f); return; }
+    fputc('"', f);
+    for (const char *p = s; *p; ++p) {
+        if (*p == '"') fputc('"', f); // duplica aspas
+        fputc(*p, f);
     }
+    fputc('"', f);
+}
 
-    totalClientes = 0;
+// ------------------------------------------------------------
+// Validação simples de e-mail
+// ------------------------------------------------------------
+static int email_valido(const char *e) {
+    if (!e) return 0;
+    const char *at = strchr(e, '@');
+    if (!at) return 0;
+    const char *dot = strchr(at, '.');
+    if (!dot) return 0;
+    return 1;
+}
 
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        if (totalClientes >= MAX_REG) break;
+// ------------------------------------------------------------
+// LOG: verificar se já foi enviado
+// ------------------------------------------------------------
+int emailJaEnviado(int id) {
+    FILE *f = fopen("email_enviados.log", "r");
+    if (!f) return 0; // arquivo inexistente => não enviado
 
-        Cliente *c = &clientes[totalClientes];
-        c->id = sqlite3_column_int(stmt, 0);
-
-        const unsigned char *t;
-        t = sqlite3_column_text(stmt, 1); strcpy(c->nome, t ? (char*)t : "");
-        t = sqlite3_column_text(stmt, 2); strcpy(c->email, t ? (char*)t : "");
-        t = sqlite3_column_text(stmt, 3); strcpy(c->telefone, t ? (char*)t : "");
-        t = sqlite3_column_text(stmt, 4); strcpy(c->cpf_cnpj, t ? (char*)t : "");
-        t = sqlite3_column_text(stmt, 5); strcpy(c->plano, t ? (char*)t : "");
-        t = sqlite3_column_text(stmt, 6); strcpy(c->vencimento, t ? (char*)t : "");
-
-        totalClientes++;
+    int idl;
+    char data[64];
+    while (fscanf(f, "%d;%63s", &idl, data) == 2) {
+        if (idl == id) {
+            fclose(f);
+            return 1; // já enviado
+        }
     }
+    fclose(f);
+    return 0;
+}
 
-    sqlite3_finalize(stmt);
-    sqlite3_close(db);
+// ------------------------------------------------------------
+// LOG: registrar envio
+// ------------------------------------------------------------
+void registrarEnvioEmail(int id) {
+    FILE *f = fopen("email_enviados.log", "a");
+    if (!f) return;
 
-    return totalClientes;
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+
+    char data[32];
+    sprintf(data, "%04d-%02d-%02d",
+        t->tm_year + 1900,
+        t->tm_mon + 1,
+        t->tm_mday
+    );
+
+    fprintf(f, "%d;%s\n", id, data);
+    fclose(f);
+}
+
+// ------------------------------------------------------------
+// Sanitize argumento para PowerShell (remove aspas duplas)
+// substitui " por ' para evitar quebrar a linha de comando
+// ------------------------------------------------------------
+static void sanitize_for_powershell(const char *in, char *out, size_t out_sz) {
+    if (!out || out_sz == 0) return;
+    if (!in) { out[0] = '\0'; return; }
+    size_t j = 0;
+    for (size_t i = 0; in[i] != '\0' && j + 1 < out_sz; ++i) {
+        char ch = in[i];
+        if (ch == '"') {
+            if (j + 2 < out_sz) { out[j++] = '\''; } // convert quote to single quote
+        } else {
+            out[j++] = ch;
+        }
+    }
+    out[j] = '\0';
+}
+
+// ------------------------------------------------------------
+// Enviar e-mail chamando PowerShell
+// ------------------------------------------------------------
+void enviarEmailCliente(Cliente *c, int dias) {
+    if (!c) return;
+    if (!email_valido(c->email)) return;
+    if (emailJaEnviado(c->id)) return;
+
+    // montar comando com argumentos sanitizados
+    char email_s[256], nome_s[256], venc_s[64];
+    sanitize_for_powershell(c->email, email_s, sizeof(email_s));
+    sanitize_for_powershell(c->nome, nome_s, sizeof(nome_s));
+    sanitize_for_powershell(c->vencimento, venc_s, sizeof(venc_s));
+
+    char cmd[1024];
+    // certifique-se do caminho correto do script: config/send_email.ps1
+    snprintf(cmd, sizeof(cmd),
+        "powershell -ExecutionPolicy Bypass -File \"config/send_email.ps1\""
+        " -email \"%s\" -nome \"%s\" -vencimento \"%s\" -dias \"%d\"",
+        email_s, nome_s, venc_s, dias
+    );
+
+    // Run (blocking): se preferir rodar async, trocar por criação de thread
+    int rc = system(cmd);
+    // opcional: poderia analisar rc / saída do script
+    (void)rc;
+
+    registrarEnvioEmail(c->id);
 }
 
 // ------------------------------------------------------------
@@ -122,12 +212,11 @@ int carregarClientesDB(const char *dbfile) {
 void exportarRelatorioCSV(const char *fname) {
     FILE *f = fopen(fname, "w");
     if (!f) {
-        // fallback: show message in console (useful for debug if running from IDE)
         TraceLog(LOG_WARNING, "Não foi possível criar CSV: %s", fname);
         return;
     }
 
-    // Escrever BOM UTF-8 para evitar problemas com acentuação em navegadores/Excel
+    // BOM
     unsigned char bom[] = {0xEF, 0xBB, 0xBF};
     fwrite(bom, 1, sizeof(bom), f);
 
@@ -141,14 +230,20 @@ void exportarRelatorioCSV(const char *fname) {
             (dias < 0) ? "Expirado" :
             (dias <= 3 ? "A vencer" : "Ativo");
 
-        // Escape minimal: wrap textual fields in quotes
-        fprintf(f,
-                "%d,\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%d\n",
-                c->id, c->nome, c->email, c->telefone,
-                c->cpf_cnpj, c->plano, c->vencimento, sit, dias);
+        // Escapar corretamente
+        fprintf(f, "%d,", c->id);
+        csv_escape_and_write(f, c->nome); fprintf(f, ",");
+        csv_escape_and_write(f, c->email); fprintf(f, ",");
+        csv_escape_and_write(f, c->telefone); fprintf(f, ",");
+        csv_escape_and_write(f, c->cpf_cnpj); fprintf(f, ",");
+        csv_escape_and_write(f, c->plano); fprintf(f, ",");
+        csv_escape_and_write(f, c->vencimento); fprintf(f, ",");
+        csv_escape_and_write(f, sit);
+        fprintf(f, ",%d\n", dias);
     }
 
     fclose(f);
+    TraceLog(LOG_INFO, "Relatorio gerado: %s", fname);
 }
 
 // ------------------------------------------------------------
@@ -178,11 +273,58 @@ void Card(Rectangle r, const char *titulo, int valor, Color cor) {
     DrawText(TextFormat("%d", valor), r.x + 20, r.y + 55, 34, WHITE);
 }
 
-// Small helper: clamp
-static float clampf(float v, float a, float b) {
-    if (v < a) return a;
-    if (v > b) return b;
-    return v;
+// ------------------------------------------------------------
+// Carregar DB (com envio automático)
+// ------------------------------------------------------------
+int carregarClientesDB(const char *dbfile) {
+    sqlite3 *db;
+    sqlite3_stmt *stmt;
+
+    const char *sql =
+        "SELECT id, nome, email, telefone, cpf_cnpj, plano, vencimento "
+        "FROM clientes ORDER BY id;";
+
+    if (sqlite3_open(dbfile, &db) != SQLITE_OK) {
+        TraceLog(LOG_WARNING, "Falha ao abrir DB: %s", dbfile);
+        return 0;
+    }
+
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+        TraceLog(LOG_WARNING, "Falha prepare: %s", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return 0;
+    }
+
+    totalClientes = 0;
+
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        if (totalClientes >= MAX_REG) break;
+
+        Cliente *c = &clientes[totalClientes];
+        c->id = sqlite3_column_int(stmt, 0);
+
+        const unsigned char *t;
+        t = sqlite3_column_text(stmt, 1); safe_strcpy(c->nome, t ? (const char*)t : "", sizeof(c->nome));
+        t = sqlite3_column_text(stmt, 2); safe_strcpy(c->email, t ? (const char*)t : "", sizeof(c->email));
+        t = sqlite3_column_text(stmt, 3); safe_strcpy(c->telefone, t ? (const char*)t : "", sizeof(c->telefone));
+        t = sqlite3_column_text(stmt, 4); safe_strcpy(c->cpf_cnpj, t ? (const char*)t : "", sizeof(c->cpf_cnpj));
+        t = sqlite3_column_text(stmt, 5); safe_strcpy(c->plano, t ? (const char*)t : "", sizeof(c->plano));
+        t = sqlite3_column_text(stmt, 6); safe_strcpy(c->vencimento, t ? (const char*)t : "", sizeof(c->vencimento));
+
+        // Envio automático: se vencido ou a vencer (<= 3 dias)
+        int d = diasRestantes(c->vencimento);
+        if ((d < 0 || d <= 3) && email_valido(c->email) && !emailJaEnviado(c->id)) {
+            enviarEmailCliente(c, d);
+            // registrarEnvioEmail é chamado dentro de enviarEmailCliente
+        }
+
+        totalClientes++;
+    }
+
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
+
+    return totalClientes;
 }
 
 // ------------------------------------------------------------
@@ -195,24 +337,24 @@ int main(void) {
 
     // Carrega recursos
     Texture2D logo = {0};
-    // Tente carregar logo.png; se falhar, o programa continua sem imagem
     if (FileExists("logo.png")) {
         logo = LoadTexture("logo.png");
     }
 
-    // Carrega DB (arquivo agendpet.db)
-    carregarClientesDB("agendpet.db");
+    // Carrega DB (arquivo agendpet.db) - note: esto tambem dispara envios automáticos
+    int loaded = carregarClientesDB("agendpet.db");
+    if (!loaded) {
+        TraceLog(LOG_WARNING, "Nenhum cliente carregado. Verifique agendpet.db e tabela clientes.");
+    }
 
-    // Variables for layout/interaction
-    int porPagina = 12; // ainda mantemos paginacao via botoes, mas prioridade é scroll
-    bool running = true;
+    int page = 0;
+    const int perPage = 14;
 
     // Pre-calc visible rows
     int visibleRows = (int)(TABLE_VISIBLE_H / ROW_HEIGHT);
     if (visibleRows < 1) visibleRows = 1;
 
-    // Main loop
-    while (!WindowShouldClose() && running) {
+    while (!WindowShouldClose()) {
         // Handle input for scroll (mouse wheel)
         float wheel = GetMouseWheelMove();
         if (wheel != 0.0f) {
@@ -257,11 +399,23 @@ int main(void) {
         }
 
         if (Botao((Rectangle){30, 155, 160, 45}, "Recarregar DB")) {
+            // limpar flag de clients e recarregar (não remove log de envios)
             carregarClientesDB("agendpet.db");
         }
 
-        if (Botao((Rectangle){30, 210, 160, 45}, "Sair")) {
-            running = false;
+        // botão manual para reenviar avisos (apenas para clientes não marcados como enviados)
+        if (Botao((Rectangle){30, 210, 160, 45}, "Enviar Avisos")) {
+            for (int i = 0; i < totalClientes; i++) {
+                Cliente *c = &clientes[i];
+                int d = diasRestantes(c->vencimento);
+                if ((d < 0 || d <= 3) && email_valido(c->email) && !emailJaEnviado(c->id)) {
+                    enviarEmailCliente(c, d);
+                }
+            }
+        }
+
+        if (Botao((Rectangle){30, 265, 160, 45}, "Sair")) {
+            break;
         }
 
         // ------------------------------------------------------------

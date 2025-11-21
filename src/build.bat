@@ -11,9 +11,9 @@ echo Usando GCC: "%GCC%"
 echo Usando Raylib: "%RAYLIB_PATH%"
 
 "%GCC%" ^
-    ..\painel.c ^
-    ..\main.c ^
-    ..\sqlite3.c ^
+    main.c ^
+    painel.c ^
+    sqlite3.c ^
     -I"%RAYLIB_PATH%\include" ^
     -L"%RAYLIB_PATH%\lib" ^
     -lraylib -lopengl32 -lgdi32 -lwinmm -lm ^
@@ -35,3 +35,4 @@ echo Compilado com sucesso!
 echo Saída: PetControl.exe
 echo ================================
 pause
+
