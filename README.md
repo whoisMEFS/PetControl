@@ -5,9 +5,6 @@ O sistema utiliza SQLite3, interface em terminal e possui módulos organizados p
 
 🚀 Funcionalidades
 
-Cadastro de clientes
-
-Agendamento de serviços
 
 Relatórios por plano
 
