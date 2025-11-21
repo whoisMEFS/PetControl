@@ -1,22 +1,37 @@
-# Binários
+# ======================================================
+# IGNORAR ARQUIVOS GERADOS / COMPILAÇÃO
+# ======================================================
+
+# Executáveis e DLLs gerados
 *.exe
 *.dll
 
-# Banco de dados
+# Build output (somente resultados, não scripts)
+build/
+
+# ======================================================
+# ARQUIVOS DE BANCO DE DADOS
+# ======================================================
 *.db
 
-# CSVs sensíveis
-*.csv
-
-# Configurações e credenciais
+# ======================================================
+# ARQUIVOS SENSÍVEIS
+# ======================================================
 config/credentials.cfg
 config/send_email.ps1
 
-# Build
-build/
+# ======================================================
+# EDITORES
+# ======================================================
 
 # VSCode
 .vscode/
 
 # Windows
 desktop.ini
+
+# ======================================================
+# OUTROS
+# ======================================================
+# Arquivos CSV gerados / logs / exportações
+*.csv
