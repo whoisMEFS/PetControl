@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build raylib",
+            "type": "shell",
+            "command": "\"C:/Users/SuportePet 2.0/Documents/Documentos/Luana/faculdade/raylib-5.0_win64_mingw-w64/mingw/bin/gcc.exe\"",
+            "args": [
+                "agenda_gui.c",
+                "-o", "agenda_gui.exe",
+
+                "-I", "\"C:/Users/SuportePet 2.0/Documents/Documentos/Luana/faculdade/raylib-5.0_win64_mingw-w64/include\"",
+                "-L", "\"C:/Users/SuportePet 2.0/Documents/Documentos/Luana/faculdade/raylib-5.0_win64_mingw-w64/lib\"",
+
+                "-lraylib",
+                "-lopengl32",
+                "-lgdi32",
+                "-lwinmm"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

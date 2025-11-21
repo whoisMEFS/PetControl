@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run agenda_gui",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/agenda_gui.exe",
+            "cwd": "${workspaceFolder}",
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:/Users/SuportePet 2.0/Documents/Documentos/Luana/faculdade/raylib-5.0_win64_mingw-w64/mingw/bin/gdb.exe",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        }
+    ]
+}
