@@ -98,6 +98,99 @@
             height: auto;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
         }
+
+        /* Seção Essencial */
+        .essential-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .essential-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%232EC4B6" opacity="0.05"><path d="M500,50 C600,80 700,20 800,50 C900,80 1000,20 1000,50 L1000,100 L0,100 L0,50 C100,20 200,80 300,50 C400,20 500,80 500,50 Z"/></svg>');
+            background-size: cover;
+        }
+
+        .benefit-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            height: 100%;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--turquesa);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .benefit-icon {
+            font-size: 2.5rem;
+            color: var(--turquesa);
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--turquesa);
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--cinza-escuro);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Modal personalizado */
+        .custom-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custom-modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            color: var(--turquesa);
+            margin-bottom: 1rem;
+        }
+
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
     </style>
 </head>
 <body>
@@ -113,9 +206,11 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="#home">Início</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#essencial">Por que Escolher?</a></li>
                     <li class="nav-item"><a class="nav-link" href="#demo">Demonstração</a></li>
                     <li class="nav-item"><a class="nav-link" href="#features">Funcionalidades</a></li>
                     <li class="nav-item"><a class="nav-link" href="#pricing">Planos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#compras">Compras</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Contato</a></li>
                 </ul>
             </div>
@@ -139,14 +234,122 @@
                 <div class="col-lg-6 text-center">
                     <div class="logo-container">
                         <!-- Logo do PetControl -->
-                        <img src="https://raw.githubusercontent.com/luanasacutti/PetControl/main/assets/images/logo.png" 
-                             alt="PetControl" 
-                             style="max-width: 100%; height: auto;">
+                        <img src="assets/images/logo.png" alt="PetControl" class="logo-img" style="max-width: 100%; height: auto;">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>                        
+    </section>
+
+    <!-- Por que a PetControl é Essencial -->
+    <section id="essencial" class="essential-section py-5">
+        <div class="container py-5">
+            <div class="row align-items-center mb-5">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h2 class="display-5 fw-bold mb-4">Por que a PetControl é Essencial para o Seu Negócio?</h2>
+                    <p class="lead text-muted">Mais de 500 pet shops em todo o Brasil já transformaram sua gestão com nossa solução</p>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-4 text-center">
+                    <div class="stat-number">+40%</div>
+                    <div class="stat-label">Aumento na Produtividade</div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="stat-number">-60%</div>
+                    <div class="stat-label">Redução de Erros</div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="stat-number">+35%</div>
+                    <div class="stat-label">Crescimento nas Vendas</div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h5>Economize até 15 horas por semana</h5>
+                        <p class="text-muted">Automatize agendamentos, controle de estoque e emissão de relatórios. Foque no que realmente importa: seus clientes e pets.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h5>Aumente suas vendas em 35%</h5>
+                        <p class="text-muted">Sistema de fidelidade integrado, lembretes automáticos e controle de estoque inteligente para nunca perder uma venda.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <h5>Clientes 45% mais satisfeitos</h5>
+                        <p class="text-muted">Lembretes automáticos, histórico completo dos pets e atendimento personalizado aumentam a fidelização.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h5>Zero preocupação com tecnologia</h5>
+                        <p class="text-muted">Sistema 100% em nuvem, backups automáticos e suporte especializado. Nós cuidamos da tecnologia, você cuida dos pets.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <h5>Retorno garantido em 3 meses</h5>
+                        <p class="text-muted">Com o aumento de produtividade e vendas, o investimento se paga rapidamente. Garantia de satisfação ou devolvemos seu dinheiro.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h5>Acesse de qualquer lugar</h5>
+                        <p class="text-muted">Gerencie seu pet shop do computador, tablet ou smartphone. Tudo sincronizado em tempo real.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-lg-8 mx-auto text-center">
+                    <div class="card border-petcontrol">
+                        <div class="card-body py-4">
+                            <h4 class="text-petcontrol mb-3">🎯 Resultados Reais de Nossos Clientes</h4>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="stat-number">98%</div>
+                                    <div class="stat-label">Recomendam</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-number">4.9/5</div>
+                                    <div class="stat-label">Avaliação</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-number">24/7</div>
+                                    <div class="stat-label">Suporte</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Demo Section -->
     <section id="demo" class="py-5">
@@ -470,7 +673,7 @@
                                 <li class="mb-2 text-muted">✗ Controle de estoque</li>
                                 <li class="mb-2 text-muted">✗ Relatórios avançados</li>
                             </ul>
-                            <button class="btn btn-outline-primary w-100">Assinar Agora</button>
+                            <button class="btn btn-outline-primary w-100" onclick="comprarPlano('Básico')">Assinar Agora</button>
                         </div>
                     </div>
                 </div>
@@ -490,7 +693,7 @@
                                 <li class="mb-2">✓ Até 3 usuários</li>
                                 <li class="mb-2">✓ Suporte prioritário</li>
                             </ul>
-                            <button class="btn btn-primary w-100">Assinar Agora</button>
+                            <button class="btn btn-primary w-100" onclick="comprarPlano('Profissional')">Assinar Agora</button>
                         </div>
                     </div>
                 </div>
@@ -507,7 +710,80 @@
                                 <li class="mb-2">✓ Usuários ilimitados</li>
                                 <li class="mb-2">✓ Suporte 24/7</li>
                             </ul>
-                            <button class="btn btn-outline-primary w-100">Assinar Agora</button>
+                            <button class="btn btn-outline-primary w-100" onclick="comprarPlano('Enterprise')">Assinar Agora</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compras Section -->
+    <section id="compras" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Sistema de Compras e Estoque</h2>
+            <div class="demo-section">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="text-petcontrol mb-4">Cadastrar Compra</h4>
+                        <form id="compraForm">
+                            <div class="mb-3">
+                                <label class="form-label">Fornecedor</label>
+                                <input type="text" class="form-control" id="fornecedorCompra" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Produto</label>
+                                <input type="text" class="form-control" id="produtoCompra" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Categoria</label>
+                                <select class="form-select" id="categoriaCompra" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="Ração">Ração</option>
+                                    <option value="Medicamento">Medicamento</option>
+                                    <option value="Brinquedo">Brinquedo</option>
+                                    <option value="Higiene">Higiene</option>
+                                    <option value="Acessório">Acessório</option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Quantidade</label>
+                                        <input type="number" class="form-control" id="quantidadeCompra" min="1" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Valor Unitário (R$)</label>
+                                        <input type="number" class="form-control" id="valorUnitarioCompra" step="0.01" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Data da Compra</label>
+                                <input type="date" class="form-control" id="dataCompra" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registrar Compra</button>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 class="text-petcontrol mb-4">Compras Registradas</h4>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Fornecedor</th>
+                                        <th>Produto</th>
+                                        <th>Quantidade</th>
+                                        <th>Valor Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="comprasList">
+                                    <!-- Compras serão carregadas aqui -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -552,6 +828,18 @@
         </div>
     </footer>
 
+    <!-- Modal de Confirmação -->
+    <div class="custom-modal" id="confirmModal">
+        <div class="custom-modal-content fade-in">
+            <div class="modal-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h4 class="text-petcontrol mb-3">Mensagem Enviada com Sucesso!</h4>
+            <p class="text-muted mb-4">Entraremos em contato em até 24 horas. Obrigado pelo seu interesse no PetControl!</p>
+            <button class="btn btn-primary" onclick="fecharModal()">Entendido</button>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
         // Simulação de dados - Em um sistema real, isso viria de uma API
@@ -559,6 +847,7 @@
         let pets = JSON.parse(localStorage.getItem('pets')) || [];
         let agendamentos = JSON.parse(localStorage.getItem('agendamentos')) || [];
         let vendas = JSON.parse(localStorage.getItem('vendas')) || [];
+        let compras = JSON.parse(localStorage.getItem('compras')) || [];
         
         const servicos = [
             { id: 1, nome: "Banho", preco: 45.00 },
@@ -582,11 +871,62 @@
             carregarPets();
             carregarAgendamentos();
             carregarVendas();
+            carregarCompras();
             popularSelects();
+            
+            // Configurar data atual para o campo de compra
+            document.getElementById('dataCompra').valueAsDate = new Date();
         });
 
         function scrollToDemo() {
             document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Funções para Compras
+        document.getElementById('compraForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const compra = {
+                id: Date.now(),
+                fornecedor: document.getElementById('fornecedorCompra').value,
+                produto: document.getElementById('produtoCompra').value,
+                categoria: document.getElementById('categoriaCompra').value,
+                quantidade: parseInt(document.getElementById('quantidadeCompra').value),
+                valorUnitario: parseFloat(document.getElementById('valorUnitarioCompra').value),
+                valorTotal: parseInt(document.getElementById('quantidadeCompra').value) * parseFloat(document.getElementById('valorUnitarioCompra').value),
+                dataCompra: document.getElementById('dataCompra').value,
+                dataRegistro: new Date().toISOString()
+            };
+            
+            compras.push(compra);
+            salvarDados();
+            carregarCompras();
+            this.reset();
+            document.getElementById('dataCompra').valueAsDate = new Date();
+            
+            mostrarMensagem('Compra registrada com sucesso!', 'success');
+        });
+
+        function carregarCompras() {
+            const tbody = document.getElementById('comprasList');
+            tbody.innerHTML = '';
+            
+            const comprasOrdenadas = compras.sort((a, b) => 
+                new Date(b.dataRegistro) - new Date(a.dataRegistro)
+            ).slice(0, 10);
+            
+            comprasOrdenadas.forEach(compra => {
+                const data = new Date(compra.dataCompra);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${data.toLocaleDateString('pt-BR')}</td>
+                    <td>${compra.fornecedor}</td>
+                    <td>${compra.produto}</td>
+                    <td>${compra.quantidade}</td>
+                    <td>R$ ${compra.valorTotal.toFixed(2)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
         // Funções para Clientes
@@ -873,6 +1213,7 @@
             localStorage.setItem('pets', JSON.stringify(pets));
             localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
             localStorage.setItem('vendas', JSON.stringify(vendas));
+            localStorage.setItem('compras', JSON.stringify(compras));
         }
 
         function mostrarMensagem(mensagem, tipo) {
@@ -913,7 +1254,34 @@
                 mostrarMensagem('Preencha os dados e clique em Cadastrar para atualizar', 'info');
             }
         }
+
+        // Funções para o Modal
+        function mostrarModalContato() {
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function fecharModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        function comprarPlano(plano) {
+            mostrarModalContato();
+            mostrarMensagem(`Solicitação para o plano ${plano} enviada com sucesso! Entraremos em contato em breve.`, 'success');
+        }
+
+        // Configurar formulário de contato
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            mostrarModalContato();
+            this.reset();
+        });
+
+        // Fechar modal ao clicar fora
+        document.getElementById('confirmModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                fecharModal();
+            }
+        });
     </script>
 </body>
 </html>
-
