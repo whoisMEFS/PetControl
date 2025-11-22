@@ -191,6 +191,15 @@
         .fade-in {
             animation: fadeIn 0.5s ease-out;
         }
+        
+        /* Estoque */
+        .estoque-baixo {
+            background-color: #fff3cd !important;
+        }
+        
+        .estoque-critico {
+            background-color: #f8d7da !important;
+        }
     </style>
 </head>
 <body>
@@ -210,7 +219,6 @@
                     <li class="nav-item"><a class="nav-link" href="#demo">Demonstração</a></li>
                     <li class="nav-item"><a class="nav-link" href="#features">Funcionalidades</a></li>
                     <li class="nav-item"><a class="nav-link" href="#pricing">Planos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#compras">Compras</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">Contato</a></li>
                 </ul>
             </div>
@@ -222,7 +230,9 @@
         <div class="container py-5">
             <div class="row align-items-center">
                 <div class="col-lg-6">
-                    <h1 class="display-4 fw-bold mb-4">Sistema Completo para Gestão do Seu Pet Shop</h1>
+                    <h1 class="display-4 fw-bold mb-4">
+                        <i class="fas fa-paw me-2"></i>PetControl - Sistema Completo para Gestão do Seu Pet Shop
+                    </h1>
                     <p class="lead mb-4">Agenda inteligente, PDV integrado, controle de estoque e muito mais em uma única plataforma</p>
                     <div class="d-flex gap-3 flex-wrap">
                         <button class="btn btn-warning btn-lg" onclick="scrollToDemo()">
@@ -234,9 +244,7 @@
                 <div class="col-lg-6 text-center">
                     <div class="logo-container">
                         <!-- Logo do PetControl -->
-                        <img src="assets/images/logo.png" alt="PetControl" class="logo-img" style="max-width: 100%; height: auto;">
-                            </div>
-                        </div>
+                        <img src="assets/images/logo.png" alt="PetControl" class="logo-img">
                     </div>
                 </div>
             </div>
@@ -248,7 +256,7 @@
         <div class="container py-5">
             <div class="row align-items-center mb-5">
                 <div class="col-lg-8 mx-auto text-center">
-                    <h2 class="display-5 fw-bold mb-4">Por que a PetControl é Essencial para o Seu Negócio?</h2>
+                    <h2 class="display-5 fw-bold mb-4">Por que a PetControl é essencial para seu negócio?</h2>
                     <p class="lead text-muted">Mais de 500 pet shops em todo o Brasil já transformaram sua gestão com nossa solução</p>
                 </div>
             </div>
@@ -369,6 +377,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="pill" href="#vendas">PDV</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="pill" href="#compras">Compras e Estoque</a>
                     </li>
                 </ul>
 
@@ -587,6 +598,91 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Compras e Estoque Tab -->
+                    <div class="tab-pane fade" id="compras">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="text-petcontrol mb-4">Cadastrar Compra</h4>
+                                <form id="compraForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Fornecedor</label>
+                                        <input type="text" class="form-control" id="fornecedorCompra" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Produto</label>
+                                        <input type="text" class="form-control" id="produtoCompra" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Categoria</label>
+                                        <select class="form-select" id="categoriaCompra" required>
+                                            <option value="">Selecione...</option>
+                                            <option value="Ração">Ração</option>
+                                            <option value="Medicamento">Medicamento</option>
+                                            <option value="Brinquedo">Brinquedo</option>
+                                            <option value="Higiene">Higiene</option>
+                                            <option value="Acessório">Acessório</option>
+                                        </select>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Quantidade</label>
+                                                <input type="number" class="form-control" id="quantidadeCompra" min="1" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Valor Unitário (R$)</label>
+                                                <input type="number" class="form-control" id="valorUnitarioCompra" step="0.01" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Data da Compra</label>
+                                        <input type="date" class="form-control" id="dataCompra" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Registrar Compra</button>
+                                </form>
+                            </div>
+                            <div class="col-md-6">
+                                <h4 class="text-petcontrol mb-4">Compras Registradas</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Data</th>
+                                                <th>Fornecedor</th>
+                                                <th>Produto</th>
+                                                <th>Quantidade</th>
+                                                <th>Valor Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="comprasList">
+                                            <!-- Compras serão carregadas aqui -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <h4 class="text-petcontrol mb-4 mt-5">Situação do Estoque</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Produto</th>
+                                                <th>Categoria</th>
+                                                <th>Quantidade</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="estoqueList">
+                                            <!-- Estoque será carregado aqui -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -595,7 +691,7 @@
     <!-- Features Section -->
     <section id="features" class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center mb-5">Funcionalidades Completas</h2>
+            <h2 class="text-center mb-5">Funcionalidades completas</h2>
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="text-center">
@@ -658,7 +754,7 @@
     <!-- Pricing Section -->
     <section id="pricing" class="py-5">
         <div class="container">
-            <h2 class="text-center mb-5">Planos e Preços</h2>
+            <h2 class="text-center mb-5">Planos</h2>
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="card h-100 border-petcontrol">
@@ -718,83 +814,10 @@
         </div>
     </section>
 
-    <!-- Compras Section -->
-    <section id="compras" class="py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center mb-5">Sistema de Compras e Estoque</h2>
-            <div class="demo-section">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h4 class="text-petcontrol mb-4">Cadastrar Compra</h4>
-                        <form id="compraForm">
-                            <div class="mb-3">
-                                <label class="form-label">Fornecedor</label>
-                                <input type="text" class="form-control" id="fornecedorCompra" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Produto</label>
-                                <input type="text" class="form-control" id="produtoCompra" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Categoria</label>
-                                <select class="form-select" id="categoriaCompra" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="Ração">Ração</option>
-                                    <option value="Medicamento">Medicamento</option>
-                                    <option value="Brinquedo">Brinquedo</option>
-                                    <option value="Higiene">Higiene</option>
-                                    <option value="Acessório">Acessório</option>
-                                </select>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Quantidade</label>
-                                        <input type="number" class="form-control" id="quantidadeCompra" min="1" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Valor Unitário (R$)</label>
-                                        <input type="number" class="form-control" id="valorUnitarioCompra" step="0.01" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Data da Compra</label>
-                                <input type="date" class="form-control" id="dataCompra" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Registrar Compra</button>
-                        </form>
-                    </div>
-                    <div class="col-md-6">
-                        <h4 class="text-petcontrol mb-4">Compras Registradas</h4>
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Data</th>
-                                        <th>Fornecedor</th>
-                                        <th>Produto</th>
-                                        <th>Quantidade</th>
-                                        <th>Valor Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="comprasList">
-                                    <!-- Compras serão carregadas aqui -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Contact Section -->
     <section id="contact" class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-center mb-5">Entre em Contato</h2>
+            <h2 class="text-center mb-5">Entre em contato</h2>
             <div class="row">
                 <div class="col-md-8 mx-auto">
                     <form id="contactForm">
@@ -824,7 +847,7 @@
     <!-- Footer -->
     <footer class="bg-dark text-white py-4">
         <div class="container text-center">
-            <p class="mb-0">&copy; 2024 PetControl. Desenvolvido por Guilherme Almeida, Luana Sacutti e Maria Eduarda Ferraz.</p>
+            <p class="mb-0">&copy; 2025 PetControl. Desenvolvido por Guilherme Almeida, Luana Sacutti e Maria Eduarda Ferraz.</p>
         </div>
     </footer>
 
@@ -848,6 +871,7 @@
         let agendamentos = JSON.parse(localStorage.getItem('agendamentos')) || [];
         let vendas = JSON.parse(localStorage.getItem('vendas')) || [];
         let compras = JSON.parse(localStorage.getItem('compras')) || [];
+        let estoque = JSON.parse(localStorage.getItem('estoque')) || [];
         
         const servicos = [
             { id: 1, nome: "Banho", preco: 45.00 },
@@ -858,11 +882,11 @@
         ];
 
         const produtos = [
-            { id: 1, nome: "Ração Premium 15kg", preco: 189.90 },
-            { id: 2, nome: "Brinquedo para Cães", preco: 25.00 },
-            { id: 3, nome: "Coleira", preco: 35.00 },
-            { id: 4, nome: "Shampoo Antipulgas", preco: 42.50 },
-            { id: 5, nome: "Areia Sanitária 4kg", preco: 28.90 }
+            { id: 1, nome: "Ração Premium 15kg", preco: 189.90, categoria: "Ração", estoqueMinimo: 5 },
+            { id: 2, nome: "Brinquedo para Cães", preco: 25.00, categoria: "Brinquedo", estoqueMinimo: 10 },
+            { id: 3, nome: "Coleira", preco: 35.00, categoria: "Acessório", estoqueMinimo: 8 },
+            { id: 4, nome: "Shampoo Antipulgas", preco: 42.50, categoria: "Higiene", estoqueMinimo: 6 },
+            { id: 5, nome: "Areia Sanitária 4kg", preco: 28.90, categoria: "Higiene", estoqueMinimo: 12 }
         ];
 
         // Inicialização
@@ -872,6 +896,7 @@
             carregarAgendamentos();
             carregarVendas();
             carregarCompras();
+            carregarEstoque();
             popularSelects();
             
             // Configurar data atual para o campo de compra
@@ -899,8 +924,13 @@
             };
             
             compras.push(compra);
+            
+            // Atualizar estoque
+            atualizarEstoque(compra.produto, compra.categoria, compra.quantidade);
+            
             salvarDados();
             carregarCompras();
+            carregarEstoque();
             this.reset();
             document.getElementById('dataCompra').valueAsDate = new Date();
             
@@ -924,6 +954,51 @@
                     <td>${compra.produto}</td>
                     <td>${compra.quantidade}</td>
                     <td>R$ ${compra.valorTotal.toFixed(2)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Funções para Estoque
+        function atualizarEstoque(produto, categoria, quantidade) {
+            const itemExistente = estoque.find(item => item.produto === produto);
+            
+            if (itemExistente) {
+                itemExistente.quantidade += quantidade;
+            } else {
+                const produtoBase = produtos.find(p => p.nome === produto);
+                estoque.push({
+                    produto: produto,
+                    categoria: categoria,
+                    quantidade: quantidade,
+                    estoqueMinimo: produtoBase ? produtoBase.estoqueMinimo : 5
+                });
+            }
+        }
+
+        function carregarEstoque() {
+            const tbody = document.getElementById('estoqueList');
+            tbody.innerHTML = '';
+            
+            estoque.forEach(item => {
+                const tr = document.createElement('tr');
+                let status = 'Normal';
+                let classe = '';
+                
+                if (item.quantidade <= 0) {
+                    status = 'Esgotado';
+                    classe = 'estoque-critico';
+                } else if (item.quantidade <= item.estoqueMinimo) {
+                    status = 'Baixo';
+                    classe = 'estoque-baixo';
+                }
+                
+                tr.className = classe;
+                tr.innerHTML = `
+                    <td>${item.produto}</td>
+                    <td>${item.categoria}</td>
+                    <td>${item.quantidade}</td>
+                    <td>${status}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1097,6 +1172,18 @@
                 return;
             }
             
+            // Verificar estoque para produtos (não serviços)
+            if (produtos.some(p => p.id === produtoId)) {
+                const itemEstoque = estoque.find(item => item.produto === produto.nome);
+                if (!itemEstoque || itemEstoque.quantidade < quantidade) {
+                    mostrarMensagem('Estoque insuficiente para realizar a venda!', 'error');
+                    return;
+                }
+                
+                // Atualizar estoque
+                itemEstoque.quantidade -= quantidade;
+            }
+            
             const venda = {
                 id: Date.now(),
                 clienteId: clienteId,
@@ -1113,6 +1200,7 @@
             vendas.push(venda);
             salvarDados();
             carregarVendas();
+            carregarEstoque();
             this.reset();
             
             mostrarMensagem('Venda registrada com sucesso!', 'success');
@@ -1214,6 +1302,7 @@
             localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
             localStorage.setItem('vendas', JSON.stringify(vendas));
             localStorage.setItem('compras', JSON.stringify(compras));
+            localStorage.setItem('estoque', JSON.stringify(estoque));
         }
 
         function mostrarMensagem(mensagem, tipo) {
@@ -1248,7 +1337,7 @@
                 document.getElementById('enderecoCliente').value = cliente.endereco || '';
                 
                 // Mudar para a aba de clientes
-                const clienteTab = new bootstrap.Tab(document.querySelector('#clientes-tab'));
+                const clienteTab = new bootstrap.Tab(document.querySelector('[href="#clientes"]'));
                 clienteTab.show();
                 
                 mostrarMensagem('Preencha os dados e clique em Cadastrar para atualizar', 'info');
