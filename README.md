@@ -1,5 +1,4 @@
-# **PetControl – Gerenciamento de Planos Comprados no Site<img width="427" height="23" alt="image" src="https://github.com/user-attachments/assets/d79e162a-e590-4734-98d3-1195d93cd605" />
-🐾**
+**PetControl – Gerenciamento de Planos Comprados no Site🐾**
 
 ## 👥 **Nosso Grupo**
 **Desenvolvido por:**
