@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Clientes — Agenda PET</title>
+</head>
+<body>
+<h1>Clientes</h1>
+<div id="lista">Carregando...</div>
+<script>
+fetch('/api/clientes')
+.then(r => r.json())
+.then(data => {
+const cont = document.getElementById('lista');
+if (!data.length) cont.innerText = 'Nenhum cliente cadastrado';
+else {
+cont.innerHTML = '<ul>' + data.map(c => `<li>${c.id} — ${c.nome} — ${c.email || 'sem email'}</li>`).join('') + '</ul>';
+}
+})
+.catch(err => document.getElementById('lista').innerText = 'Erro: ' + err.message);
+</script>
+</body>
+</html>

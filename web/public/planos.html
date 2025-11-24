@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Planos — Agenda PET</title>
+</head>
+<body>
+<h1>Planos</h1>
+<div id="lista">Carregando...</div>
+<script>
+fetch('/api/planos')
+.then(r => r.json())
+.then(data => {
+const cont = document.getElementById('lista');
+if (!data.length) cont.innerText = 'Nenhum plano cadastrado';
+else {
+cont.innerHTML = '<ul>' + data.map(p => `<li>${p.id} — Cliente ${p.cliente_id} — Vence: ${p.vencimento}</li>`).join('') + '</ul>';
+}
+})
+.catch(err => document.getElementById('lista').innerText = 'Erro: ' + err.message);
+</script>
+</body>
+</html>

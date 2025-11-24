@@ -12,7 +12,7 @@ echo Usando Raylib: "%RAYLIB_PATH%"
 
 "%GCC%" ^
     main.c ^
-    painel.c ^
+    painel_api.c ^
     sqlite3.c ^
     -I"%RAYLIB_PATH%\include" ^
     -L"%RAYLIB_PATH%\lib" ^
@@ -35,4 +35,3 @@ echo Compilado com sucesso!
 echo Saída: PetControl.exe
 echo ================================
 pause
-

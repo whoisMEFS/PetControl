@@ -342,7 +342,7 @@ int main(void) {
     }
 
     // Carrega DB (arquivo agendpet.db) - note: esto tambem dispara envios automáticos
-    int loaded = carregarClientesDB("agendpet.db");
+    int loaded = carregarClientesDB("database/agendpet.db");
     if (!loaded) {
         TraceLog(LOG_WARNING, "Nenhum cliente carregado. Verifique agendpet.db e tabela clientes.");
     }
@@ -400,7 +400,8 @@ int main(void) {
 
         if (Botao((Rectangle){30, 155, 160, 45}, "Recarregar DB")) {
             // limpar flag de clients e recarregar (não remove log de envios)
-            carregarClientesDB("agendpet.db");
+            carregarClientesDB("database/agendpet.db");
+
         }
 
         // botão manual para reenviar avisos (apenas para clientes não marcados como enviados)

@@ -1,20 +1,26 @@
-📘 PetControl – Gerenciamento de Planos Comprados no Site
+🐾 PetControl – Sistema Completo de Gerenciamento para Pet Shops
 
-O PetControl é um sistema desenvolvido em C (Raylib + SQLite) para facilitar o controle interno dos planos que os clientes compram pelo site.
-Ele automatiza consultas, relatórios e notificações, ajudando no gerenciamento diário de forma simples e eficiente.
 
-🐾 ✨ Funcionalidades principais
+O PetControl é um ecossistema desenvolvido para auxiliar pet shops em suas rotinas internas e online.
+Ele é composto por duas plataformas integradas:
+
+🧩 1) PetControl Desktop – Gerenciamento de Planos (C + Raylib + SQLite)
+
+Uma ferramenta robusta para controle interno dos planos comprados pelo site, oferecendo consultas rápidas, relatórios e envios automáticos de alertas de vencimento.
+
+✨ Funcionalidades
 
 🔍 Consulta de cadastros feitos pelo site
-Busca rápida de clientes e informações do plano adquirido.
 
-📊 Geração de relatórios
-Exportação de dados em formatos como CSV, permitindo análises e controle.
+📊 Exportação de relatórios em CSV
 
-✉️ Envio automático de e-mails
-O sistema envia alertas quando um plano está próximo do vencimento, garantindo melhor acompanhamento dos clientes.
+✉️ Envio automático de e-mails para planos próximos do vencimento
 
-🗂️ 📁 Estrutura do projeto
+🗄 Banco de dados local SQLite3
+
+🔐 Criação automática dos arquivos .db (não enviados ao GitHub)
+
+📁 Estrutura do Projeto Desktop
 PetControl/
  ├── src/
  │   ├── main.c
@@ -30,9 +36,9 @@ PetControl/
  ├── .gitignore
  ├── README.md
 
-🔧 🛠️ Como compilar
+🔧 Como Compilar (Windows)
 
-O projeto utiliza:
+Dependências utilizadas:
 
 Raylib 5.0 (Win64)
 
@@ -40,37 +46,49 @@ GCC WinLibs (mingw-w64)
 
 SQLite3
 
-Para compilar:
+Compile executando:
 
 ./src/build.bat
 
 
-O script usa os caminhos configurados para Raylib e GCC e gera:
+O script gera:
 
 PetControl.exe
 
-🗄️ 💾 Banco de Dados
+🧩 2) PetControl Web – Plataforma Online (Java + MySQL + Front-end)
 
-Utiliza SQLite3
+Sistema completo para pet shops com agendamentos, PDV, estoque, pets, clientes e relatórios.
 
-Os arquivos .db são locais e não são enviados para o GitHub
+✨ Funcionalidades Principais
 
-O sistema cria ou manipula os bancos automaticamente
+📅 Agenda Inteligente
 
-🎯 Objetivo do Sistema
+💰 PDV com emissão de notas
 
-Facilitar o gerenciamento dos planos comprados pelo site, oferecendo:
+🐶 Cadastro e histórico dos pets
 
-Organização centralizada
+👥 Gestão completa de clientes
 
-Relatórios internos
+📦 Controle de estoque com alertas
 
-Alertas automáticos
+📊 Relatórios de desempenho
 
-Consulta rápida dos clientes
+🌐 Interface rápida e responsiva
 
-Mais eficiência operacional
+🌐 Demonstração Online
 
-👩‍💻 Desenvolvedora
+Acesse o site:
 
-Luana Sacutti
+👉 https://luanasacutti.github.io/PetControl/
+
+Abra o site:
+open index.html
+
+👩‍💻 Equipe Desenvolvedora
+
+Guilherme Almeida	Back-end & Database
+Luana Sacutti	Full-stack Development
+Maria Eduarda Ferraz	Front-end & Design
+
+📞 Contato
+Desenvolvido com ❤️ pela equipe PetControl.

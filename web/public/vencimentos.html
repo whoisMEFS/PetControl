@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Vencimentos — Agenda PET</title>
+</head>
+<body>
+<h1>Vencimentos próximos</h1>
+<label>Próximos dias: <input id="days" value="7" /></label>
+<button id="btn">Carregar</button>
+<div id="lista">—</div>
+<script>
+function carregar() {
+const days = document.getElementById('days').value || 7;
+fetch(`/api/vencimentos?days=${days}`)
+.then(r => r.json())
+.then(data => {
+const cont = document.getElementById('lista');
+if (!data.length) cont.innerText = 'Nenhum vencimento próximo';
+else cont.innerHTML = '<ul>' + data.map(x => `<li>Plano ${x.id} — ${x.cliente_nome || x.cliente_id} — Vence: ${x.vencimento}</li>`).join('') + '</ul>';
+})
+.catch(err => document.getElementById('lista').innerText = 'Erro: ' + err.message);
+}
+document.getElementById('btn').addEventListener('click', carregar);
+carregar();
+</script>
+</body>
+</html>
