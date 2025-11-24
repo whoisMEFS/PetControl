@@ -1,4 +1,4 @@
-🐾 PetControl – Sistema Completo de Gerenciamento para Pet Shops
+# **🐾 PetControl – Sistema Completo de Gerenciamento para Pet Shops
 
 O PetControl é um ecossistema desenvolvido para auxiliar pet shops em suas rotinas internas e online.
 Ele é composto por duas plataformas integradas:
