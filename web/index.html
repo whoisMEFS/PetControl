@@ -1582,3 +1582,55 @@
     </script>
 </body>
 </html>
+<script>
+// Função para cadastrar cliente quando alguém assinar um plano
+async function cadastrarCliente(dadosCliente) {
+    try {
+        const response = await fetch('/api/clientes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dadosCliente)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            console.log('Cliente cadastrado:', result);
+            return result;
+        } else {
+            console.error('Erro:', result.error);
+            return null;
+        }
+    } catch (error) {
+        console.error('Erro ao cadastrar:', error);
+        return null;
+    }
+}
+
+// Exemplo de uso quando alguém clicar em "Assinar Agora"
+// Você adapta isso para os botões do seu site
+document.addEventListener('DOMContentLoaded', function() {
+    // Se seus botões de assinatura têm IDs, pode fazer assim:
+    const botaoBasico = document.querySelector('#botao-basico');
+    const botaoProfissional = document.querySelector('#botao-profissional');
+    const botaoEnterprise = document.querySelector('#botao-enterprise');
+    
+    if (botaoBasico) {
+        botaoBasico.addEventListener('click', function() {
+            // Aqui você pega os dados do formulário do seu site
+            const dadosCliente = {
+                nome: "Nome do Cliente", // Pegue do seu form
+                email: "email@cliente.com", // Pegue do seu form  
+                telefone: "(11) 99999-9999", // Pegue do seu form
+                cpf_cnpj: "123.456.789-00", // Pegue do seu form
+                plano: "Básico",
+                vencimento: "2024-12-31" // Pegue do seu form
+            };
+            
+            cadastrarCliente(dadosCliente);
+        });
+    }
+});
+</script>
